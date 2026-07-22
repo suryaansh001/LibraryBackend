@@ -1,0 +1,20 @@
+import 'dotenv/config';
+export declare const config: Readonly<{
+    DATABASE_URL: string;
+    JWT_PRIVATE_KEY: string;
+    JWT_PUBLIC_KEY: string;
+    JWT_ACCESS_EXPIRES_IN: string;
+    JWT_REFRESH_EXPIRES_IN: string;
+    QR_HMAC_SECRET: string;
+    AWS_REGION: string;
+    AWS_S3_BUCKET: string;
+    AWS_ACCESS_KEY_ID: string;
+    AWS_SECRET_ACCESS_KEY: string;
+    S3_PRESIGN_EXPIRES_IN: number;
+    PORT: number;
+    NODE_ENV: "development" | "production" | "test";
+    CORS_ORIGINS: string[];
+    LOG_LEVEL: "error" | "info" | "debug" | "warn";
+    MAX_REQUEST_BODY_SIZE: string;
+    API_VERSION: string;
+}>;

@@ -1,0 +1,77 @@
+export declare const libraryOccupancy: import("drizzle-orm/pg-core").PgTableWithColumns<{
+    name: "library_occupancy";
+    schema: undefined;
+    columns: {
+        libraryId: import("drizzle-orm/pg-core").PgColumn<{
+            name: "library_id";
+            tableName: "library_occupancy";
+            dataType: "string";
+            columnType: "PgUUID";
+            data: string;
+            driverParam: string;
+            notNull: true;
+            hasDefault: false;
+            isPrimaryKey: true;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        currentCount: import("drizzle-orm/pg-core").PgColumn<{
+            name: "current_count";
+            tableName: "library_occupancy";
+            dataType: "number";
+            columnType: "PgInteger";
+            data: number;
+            driverParam: string | number;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        capacity: import("drizzle-orm/pg-core").PgColumn<{
+            name: "capacity";
+            tableName: "library_occupancy";
+            dataType: "number";
+            columnType: "PgInteger";
+            data: number;
+            driverParam: string | number;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+        lastUpdatedAt: import("drizzle-orm/pg-core").PgColumn<{
+            name: "last_updated_at";
+            tableName: "library_occupancy";
+            dataType: "date";
+            columnType: "PgTimestamp";
+            data: Date;
+            driverParam: string;
+            notNull: true;
+            hasDefault: true;
+            isPrimaryKey: false;
+            isAutoincrement: false;
+            hasRuntimeDefault: false;
+            enumValues: undefined;
+            baseColumn: never;
+            identity: undefined;
+            generated: undefined;
+        }, {}, {}>;
+    };
+    dialect: "pg";
+}>;
+export type LibraryOccupancy = typeof libraryOccupancy.$inferSelect;
+export type NewLibraryOccupancy = typeof libraryOccupancy.$inferInsert;

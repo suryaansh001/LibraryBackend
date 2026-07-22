@@ -1,0 +1,12 @@
+export declare const DEFAULT_PAGE_SIZE = 20;
+export declare const MAX_PAGE_SIZE = 100;
+export declare const DEFAULT_REQUEST_BODY_SIZE = "1mb";
+export declare const DEFAULT_API_VERSION = "v1";
+export declare const DEFAULT_PORT = 3000;
+export declare const DEFAULT_TIMEZONE = "Asia/Kolkata";
+export declare const REQUEST_ID_HEADER = "x-request-id";
+export declare const RESPONSE_REQUEST_ID_HEADER = "X-Request-ID";
+export declare const REFRESH_TOKEN_COOKIE = "refresh_token";
+export declare const BCRYPT_ROUNDS = 12;
+export declare const LOGIN_RATE_LIMIT_MAX = 5;
+export declare const LOGIN_RATE_LIMIT_WINDOW_MS: number;

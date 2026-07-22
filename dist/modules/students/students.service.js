@@ -1,0 +1,222 @@
+import crypto from 'node:crypto';
+import { eq } from 'drizzle-orm';
+import { libraries } from '../../db/schema/libraries.js';
+import { StudentRepository } from './students.repository.js';
+import { AuditLogRepository } from '../../shared/utils/audit-log.repository.js';
+import { generateQrToken } from '../../shared/utils/qr-token.util.js';
+import { toStudentResponseDTO, toStudentListItemDTO, toStudentIdCardDTO } from '../../shared/dto/student.dto.js';
+import { AppError } from '../../shared/errors/app-error.js';
+import { ERROR_CODES } from '../../shared/errors/error-codes.js';
+export class StudentService {
+    db;
+    studentRepository;
+    auditLogRepository;
+    constructor(db) {
+        this.db = db;
+        this.studentRepository = new StudentRepository(db);
+        this.auditLogRepository = new AuditLogRepository(db);
+    }
+    async createStudent(body, ctx, ipAddress) {
+        const studentId = crypto.randomUUID();
+        const qrToken = generateQrToken(studentId, ctx.libraryId);
+        const created = await this.db.transaction(async (tx) => {
+            const repo = new StudentRepository(tx);
+            const auditRepo = new AuditLogRepository(tx);
+            const student = await repo.create({
+                ...body,
+                id: studentId,
+                libraryId: ctx.libraryId,
+                qrToken,
+                createdBy: ctx.user?.id
+            });
+            await auditRepo.create({
+                libraryId: ctx.libraryId,
+                userId: ctx.user?.id,
+                requestId: ctx.requestId,
+                action: 'CREATE_STUDENT',
+                entityType: 'students',
+                entityId: student.id,
+                newValue: student,
+                ipAddress
+            });
+            return student;
+        });
+        const studentWithRelations = await this.studentRepository.findById(created.id, ctx.libraryId);
+        if (!studentWithRelations) {
+            throw new AppError(ERROR_CODES.STUDENT_NOT_FOUND, 'Student not found after creation', 404);
+        }
+        return toStudentResponseDTO(studentWithRelations);
+    }
+    async getStudentById(studentId, libraryId) {
+        const student = await this.studentRepository.findById(studentId, libraryId);
+        if (!student) {
+            throw new AppError(ERROR_CODES.STUDENT_NOT_FOUND, 'Student not found', 404);
+        }
+        return toStudentResponseDTO(student);
+    }
+    async updateStudent(studentId, body, ctx, ipAddress) {
+        const existing = await this.studentRepository.findById(studentId, ctx.libraryId);
+        if (!existing) {
+            throw new AppError(ERROR_CODES.STUDENT_NOT_FOUND, 'Student not found', 404);
+        }
+        const updated = await this.db.transaction(async (tx) => {
+            const repo = new StudentRepository(tx);
+            const auditRepo = new AuditLogRepository(tx);
+            const student = await repo.update(studentId, ctx.libraryId, body);
+            if (!student) {
+                throw new AppError(ERROR_CODES.STUDENT_NOT_FOUND, 'Student not found or deleted', 404);
+            }
+            await auditRepo.create({
+                libraryId: ctx.libraryId,
+                userId: ctx.user?.id,
+                requestId: ctx.requestId,
+                action: 'UPDATE_STUDENT',
+                entityType: 'students',
+                entityId: studentId,
+                oldValue: existing,
+                newValue: student,
+                ipAddress
+            });
+            return student;
+        });
+        const studentWithRelations = await this.studentRepository.findById(updated.id, ctx.libraryId);
+        if (!studentWithRelations) {
+            throw new AppError(ERROR_CODES.STUDENT_NOT_FOUND, 'Student not found after update', 404);
+        }
+        return toStudentResponseDTO(studentWithRelations);
+    }
+    async updateStudentStatus(studentId, status, ctx, ipAddress) {
+        const existing = await this.studentRepository.findById(studentId, ctx.libraryId);
+        if (!existing) {
+            throw new AppError(ERROR_CODES.STUDENT_NOT_FOUND, 'Student not found', 404);
+        }
+        const updated = await this.db.transaction(async (tx) => {
+            const repo = new StudentRepository(tx);
+            const auditRepo = new AuditLogRepository(tx);
+            const student = await repo.updateStatus(studentId, ctx.libraryId, status);
+            if (!student) {
+                throw new AppError(ERROR_CODES.STUDENT_NOT_FOUND, 'Student not found or deleted', 404);
+            }
+            await auditRepo.create({
+                libraryId: ctx.libraryId,
+                userId: ctx.user?.id,
+                requestId: ctx.requestId,
+                action: 'UPDATE_STUDENT_STATUS',
+                entityType: 'students',
+                entityId: studentId,
+                oldValue: { status: existing.status },
+                newValue: { status: student.status },
+                ipAddress
+            });
+            return student;
+        });
+        const studentWithRelations = await this.studentRepository.findById(updated.id, ctx.libraryId);
+        if (!studentWithRelations) {
+            throw new AppError(ERROR_CODES.STUDENT_NOT_FOUND, 'Student not found after status update', 404);
+        }
+        return toStudentResponseDTO(studentWithRelations);
+    }
+    async softDeleteStudent(studentId, ctx, ipAddress) {
+        const existing = await this.studentRepository.findById(studentId, ctx.libraryId);
+        if (!existing) {
+            throw new AppError(ERROR_CODES.STUDENT_NOT_FOUND, 'Student not found', 404);
+        }
+        await this.db.transaction(async (tx) => {
+            const repo = new StudentRepository(tx);
+            const auditRepo = new AuditLogRepository(tx);
+            const student = await repo.softDelete(studentId, ctx.libraryId);
+            if (!student) {
+                throw new AppError(ERROR_CODES.STUDENT_NOT_FOUND, 'Student not found or already deleted', 404);
+            }
+            await auditRepo.create({
+                libraryId: ctx.libraryId,
+                userId: ctx.user?.id,
+                requestId: ctx.requestId,
+                action: 'DELETE_STUDENT',
+                entityType: 'students',
+                entityId: studentId,
+                oldValue: existing,
+                ipAddress
+            });
+        });
+    }
+    async regenerateQrToken(studentId, ctx, ipAddress) {
+        const existing = await this.studentRepository.findById(studentId, ctx.libraryId);
+        if (!existing) {
+            throw new AppError(ERROR_CODES.STUDENT_NOT_FOUND, 'Student not found', 404);
+        }
+        const newQrToken = generateQrToken(studentId, ctx.libraryId);
+        const updated = await this.db.transaction(async (tx) => {
+            const repo = new StudentRepository(tx);
+            const auditRepo = new AuditLogRepository(tx);
+            const student = await repo.updateQrToken(studentId, ctx.libraryId, newQrToken);
+            if (!student) {
+                throw new AppError(ERROR_CODES.STUDENT_NOT_FOUND, 'Student not found or deleted', 404);
+            }
+            await auditRepo.create({
+                libraryId: ctx.libraryId,
+                userId: ctx.user?.id,
+                requestId: ctx.requestId,
+                action: 'REGENERATE_QR_TOKEN',
+                entityType: 'students',
+                entityId: studentId,
+                oldValue: { qrToken: existing.qrToken },
+                newValue: { qrToken: student.qrToken },
+                ipAddress
+            });
+            return student;
+        });
+        const studentWithRelations = await this.studentRepository.findById(updated.id, ctx.libraryId);
+        if (!studentWithRelations) {
+            throw new AppError(ERROR_CODES.STUDENT_NOT_FOUND, 'Student not found after QR regeneration', 404);
+        }
+        return toStudentResponseDTO(studentWithRelations);
+    }
+    async listStudents(query, libraryId) {
+        const offset = (query.page - 1) * query.limit;
+        const result = await this.studentRepository.list({
+            libraryId,
+            search: query.search,
+            status: query.status,
+            membershipType: query.membershipType,
+            seatId: query.seatId,
+            includeDeleted: query.includeDeleted,
+            offset,
+            limit: query.limit
+        });
+        return {
+            data: result.students.map(toStudentListItemDTO),
+            total: result.total
+        };
+    }
+    async getStudentHistory(studentId, query, libraryId) {
+        const offset = (query.page - 1) * query.limit;
+        const result = await this.studentRepository.getHistory(studentId, libraryId, offset, query.limit);
+        return {
+            data: result.sessions,
+            total: result.total
+        };
+    }
+    async getStudentPayments(studentId, query, libraryId) {
+        const offset = (query.page - 1) * query.limit;
+        const result = await this.studentRepository.getPayments(studentId, libraryId, offset, query.limit);
+        return {
+            data: result.payments,
+            total: result.total
+        };
+    }
+    async getStudentIdCard(studentId, libraryId) {
+        const student = await this.studentRepository.findById(studentId, libraryId);
+        if (!student) {
+            throw new AppError(ERROR_CODES.STUDENT_NOT_FOUND, 'Student not found', 404);
+        }
+        const libraryRecord = await this.db
+            .select({ name: libraries.name })
+            .from(libraries)
+            .where(eq(libraries.id, libraryId))
+            .limit(1);
+        const libraryName = libraryRecord[0]?.name ?? 'Library';
+        return toStudentIdCardDTO(student, libraryName);
+    }
+}
+//# sourceMappingURL=students.service.js.map

@@ -1,0 +1,304 @@
+
+ RUN  v3.2.7 /home/suri/proj/library_management/backend
+
+stdout | src/modules/auth/auth.test.ts
+◇ injected env (17) from .env.test // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+
+{"level":30,"time":1783882507365,"pid":20701,"hostname":"pop-os","msg":"Database plugin initialized"}
+(node:20701) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+{"level":30,"time":1783882507620,"pid":20701,"hostname":"pop-os","reqId":"a8851d63-7713-4157-96fb-e7e64a9d4567","req":{"method":"POST","url":"/api/v1/auth/login","hostname":"localhost:80","remoteAddress":"127.0.0.1"},"msg":"incoming request"}
+stderr | src/modules/auth/auth.test.ts > Auth module > logs in successfully
+ERROR IN ERROR_HANDLER: TypeError: Cannot read properties of undefined (reading 'select')
+    at AuthRepository.findByEmailWithLibrary (/home/suri/proj/library_management/backend/src/modules/auth/auth.repository.ts:27:8)
+    at AuthService.login (/home/suri/proj/library_management/backend/src/modules/auth/auth.service.ts:36:42)
+    at Object.<anonymous> (/home/suri/proj/library_management/backend/src/modules/auth/auth.routes.ts:51:34)
+    at Object.routeOptions.handler (/home/suri/proj/library_management/backend/node_modules/@fastify/websocket/index.js:150:24)
+    at preHandlerCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:139:37)
+    at validationCompleted (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:123:5)
+    at preValidationCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:100:5)
+    at handler (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:77:7)
+    at /home/suri/proj/library_management/backend/node_modules/fastify/lib/contentTypeParser.js:199:9
+    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+
+{"level":50,"time":1783882507627,"pid":20701,"hostname":"pop-os","reqId":"a8851d63-7713-4157-96fb-e7e64a9d4567","error":{},"msg":"Unhandled error"}
+{"level":30,"time":1783882507629,"pid":20701,"hostname":"pop-os","reqId":"a8851d63-7713-4157-96fb-e7e64a9d4567","res":{"statusCode":500},"responseTime":9.072916000150144,"msg":"request completed"}
+{"level":30,"time":1783882507633,"pid":20701,"hostname":"pop-os","reqId":"bb6e5bdf-4b40-43d0-8264-c19f26bd6af8","req":{"method":"POST","url":"/api/v1/auth/login","hostname":"localhost:80","remoteAddress":"127.0.0.1"},"msg":"incoming request"}
+stderr | src/modules/auth/auth.test.ts > Auth module > returns 401 for wrong password
+ERROR IN ERROR_HANDLER: TypeError: Cannot read properties of undefined (reading 'select')
+    at AuthRepository.findByEmailWithLibrary (/home/suri/proj/library_management/backend/src/modules/auth/auth.repository.ts:27:8)
+    at AuthService.login (/home/suri/proj/library_management/backend/src/modules/auth/auth.service.ts:36:42)
+    at Object.<anonymous> (/home/suri/proj/library_management/backend/src/modules/auth/auth.routes.ts:51:34)
+    at Object.routeOptions.handler (/home/suri/proj/library_management/backend/node_modules/@fastify/websocket/index.js:150:24)
+    at preHandlerCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:139:37)
+    at validationCompleted (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:123:5)
+    at preValidationCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:100:5)
+    at handler (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:77:7)
+    at /home/suri/proj/library_management/backend/node_modules/fastify/lib/contentTypeParser.js:199:9
+    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+
+{"level":50,"time":1783882507634,"pid":20701,"hostname":"pop-os","reqId":"bb6e5bdf-4b40-43d0-8264-c19f26bd6af8","error":{},"msg":"Unhandled error"}
+{"level":30,"time":1783882507635,"pid":20701,"hostname":"pop-os","reqId":"bb6e5bdf-4b40-43d0-8264-c19f26bd6af8","res":{"statusCode":500},"responseTime":1.2755729998461902,"msg":"request completed"}
+{"level":30,"time":1783882507636,"pid":20701,"hostname":"pop-os","reqId":"557b329b-eff8-4ad0-9603-8c3b7d59328d","req":{"method":"POST","url":"/api/v1/auth/login","hostname":"localhost:80","remoteAddress":"127.0.0.1"},"msg":"incoming request"}
+stderr | src/modules/auth/auth.test.ts > Auth module > returns 401 for non-existent user with same error message
+ERROR IN ERROR_HANDLER: TypeError: Cannot read properties of undefined (reading 'select')
+    at AuthRepository.findByEmailWithLibrary (/home/suri/proj/library_management/backend/src/modules/auth/auth.repository.ts:27:8)
+    at AuthService.login (/home/suri/proj/library_management/backend/src/modules/auth/auth.service.ts:36:42)
+    at Object.<anonymous> (/home/suri/proj/library_management/backend/src/modules/auth/auth.routes.ts:51:34)
+    at Object.routeOptions.handler (/home/suri/proj/library_management/backend/node_modules/@fastify/websocket/index.js:150:24)
+    at preHandlerCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:139:37)
+    at validationCompleted (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:123:5)
+    at preValidationCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:100:5)
+    at handler (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:77:7)
+    at /home/suri/proj/library_management/backend/node_modules/fastify/lib/contentTypeParser.js:199:9
+    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+
+{"level":50,"time":1783882507636,"pid":20701,"hostname":"pop-os","reqId":"557b329b-eff8-4ad0-9603-8c3b7d59328d","error":{},"msg":"Unhandled error"}
+{"level":30,"time":1783882507636,"pid":20701,"hostname":"pop-os","reqId":"557b329b-eff8-4ad0-9603-8c3b7d59328d","res":{"statusCode":500},"responseTime":0.8135230001062155,"msg":"request completed"}
+{"level":30,"time":1783882507637,"pid":20701,"hostname":"pop-os","reqId":"55038350-cde7-4c70-adc0-998e3d9aedbb","req":{"method":"POST","url":"/api/v1/auth/login","hostname":"localhost:80","remoteAddress":"127.0.0.1"},"msg":"incoming request"}
+stderr | src/modules/auth/auth.test.ts > Auth module > returns 401 for non-existent user with same error message
+ERROR IN ERROR_HANDLER: TypeError: Cannot read properties of undefined (reading 'select')
+    at AuthRepository.findByEmailWithLibrary (/home/suri/proj/library_management/backend/src/modules/auth/auth.repository.ts:27:8)
+    at AuthService.login (/home/suri/proj/library_management/backend/src/modules/auth/auth.service.ts:36:42)
+    at Object.<anonymous> (/home/suri/proj/library_management/backend/src/modules/auth/auth.routes.ts:51:34)
+    at Object.routeOptions.handler (/home/suri/proj/library_management/backend/node_modules/@fastify/websocket/index.js:150:24)
+    at preHandlerCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:139:37)
+    at validationCompleted (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:123:5)
+    at preValidationCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:100:5)
+    at handler (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:77:7)
+    at /home/suri/proj/library_management/backend/node_modules/fastify/lib/contentTypeParser.js:199:9
+    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+
+{"level":50,"time":1783882507637,"pid":20701,"hostname":"pop-os","reqId":"55038350-cde7-4c70-adc0-998e3d9aedbb","error":{},"msg":"Unhandled error"}
+{"level":30,"time":1783882507638,"pid":20701,"hostname":"pop-os","reqId":"55038350-cde7-4c70-adc0-998e3d9aedbb","res":{"statusCode":500},"responseTime":0.8899170001968741,"msg":"request completed"}
+{"level":30,"time":1783882507638,"pid":20701,"hostname":"pop-os","reqId":"859f39b2-ec6a-4df6-8d6e-bac0f6c52482","req":{"method":"POST","url":"/api/v1/auth/login","hostname":"localhost:80","remoteAddress":"127.0.0.1"},"msg":"incoming request"}
+stderr | src/modules/auth/auth.test.ts > Auth module > refreshes access token successfully
+ERROR IN ERROR_HANDLER: TypeError: Cannot read properties of undefined (reading 'select')
+    at AuthRepository.findByEmailWithLibrary (/home/suri/proj/library_management/backend/src/modules/auth/auth.repository.ts:27:8)
+    at AuthService.login (/home/suri/proj/library_management/backend/src/modules/auth/auth.service.ts:36:42)
+    at Object.<anonymous> (/home/suri/proj/library_management/backend/src/modules/auth/auth.routes.ts:51:34)
+    at Object.routeOptions.handler (/home/suri/proj/library_management/backend/node_modules/@fastify/websocket/index.js:150:24)
+    at preHandlerCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:139:37)
+    at validationCompleted (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:123:5)
+    at preValidationCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:100:5)
+    at handler (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:77:7)
+    at /home/suri/proj/library_management/backend/node_modules/fastify/lib/contentTypeParser.js:199:9
+    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+
+{"level":50,"time":1783882507639,"pid":20701,"hostname":"pop-os","reqId":"859f39b2-ec6a-4df6-8d6e-bac0f6c52482","error":{},"msg":"Unhandled error"}
+{"level":30,"time":1783882507639,"pid":20701,"hostname":"pop-os","reqId":"859f39b2-ec6a-4df6-8d6e-bac0f6c52482","res":{"statusCode":500},"responseTime":0.7650709999725223,"msg":"request completed"}
+{"level":30,"time":1783882507640,"pid":20701,"hostname":"pop-os","reqId":"e9eeb767-b7d6-4a9e-88a4-b379f15ffbc5","req":{"method":"POST","url":"/api/v1/auth/login","hostname":"localhost:80","remoteAddress":"127.0.0.1"},"msg":"incoming request"}
+stderr | src/modules/auth/auth.test.ts > Auth module > rotates refresh token and invalidates the old token
+ERROR IN ERROR_HANDLER: TypeError: Cannot read properties of undefined (reading 'select')
+    at AuthRepository.findByEmailWithLibrary (/home/suri/proj/library_management/backend/src/modules/auth/auth.repository.ts:27:8)
+    at AuthService.login (/home/suri/proj/library_management/backend/src/modules/auth/auth.service.ts:36:42)
+    at Object.<anonymous> (/home/suri/proj/library_management/backend/src/modules/auth/auth.routes.ts:51:34)
+    at Object.routeOptions.handler (/home/suri/proj/library_management/backend/node_modules/@fastify/websocket/index.js:150:24)
+    at preHandlerCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:139:37)
+    at validationCompleted (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:123:5)
+    at preValidationCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:100:5)
+    at handler (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:77:7)
+    at /home/suri/proj/library_management/backend/node_modules/fastify/lib/contentTypeParser.js:199:9
+    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+
+{"level":50,"time":1783882507640,"pid":20701,"hostname":"pop-os","reqId":"e9eeb767-b7d6-4a9e-88a4-b379f15ffbc5","error":{},"msg":"Unhandled error"}
+{"level":30,"time":1783882507641,"pid":20701,"hostname":"pop-os","reqId":"e9eeb767-b7d6-4a9e-88a4-b379f15ffbc5","res":{"statusCode":500},"responseTime":0.6268309997394681,"msg":"request completed"}
+{"level":30,"time":1783882507641,"pid":20701,"hostname":"pop-os","reqId":"ba139c15-6fa6-419d-8864-0885638fb5ee","req":{"method":"POST","url":"/api/v1/auth/login","hostname":"localhost:80","remoteAddress":"127.0.0.1"},"msg":"incoming request"}
+stderr | src/modules/auth/auth.test.ts > Auth module > logs out and revokes refresh token
+ERROR IN ERROR_HANDLER: TypeError: Cannot read properties of undefined (reading 'select')
+    at AuthRepository.findByEmailWithLibrary (/home/suri/proj/library_management/backend/src/modules/auth/auth.repository.ts:27:8)
+    at AuthService.login (/home/suri/proj/library_management/backend/src/modules/auth/auth.service.ts:36:42)
+    at Object.<anonymous> (/home/suri/proj/library_management/backend/src/modules/auth/auth.routes.ts:51:34)
+    at Object.routeOptions.handler (/home/suri/proj/library_management/backend/node_modules/@fastify/websocket/index.js:150:24)
+    at preHandlerCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:139:37)
+    at validationCompleted (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:123:5)
+    at preValidationCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:100:5)
+    at handler (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:77:7)
+    at /home/suri/proj/library_management/backend/node_modules/fastify/lib/contentTypeParser.js:199:9
+    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+
+stderr | src/modules/auth/auth.test.ts > Auth module > returns 401 for expired access token
+ERROR IN ERROR_HANDLER: AppError: Access token is invalid
+    at Object.authenticate (/home/suri/proj/library_management/backend/src/shared/middleware/authenticate.ts:51:11)
+    at hookIterator (/home/suri/proj/library_management/backend/node_modules/fastify/lib/hooks.js:405:10)
+    at next (/home/suri/proj/library_management/backend/node_modules/fastify/lib/hooks.js:239:18)
+    at hookRunner (/home/suri/proj/library_management/backend/node_modules/fastify/lib/hooks.js:261:5)
+    at validationCompleted (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:116:5)
+    at preValidationCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:100:5)
+    at handler (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:77:7)
+    at handleRequest (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:24:5)
+    at runPreParsing (/home/suri/proj/library_management/backend/node_modules/fastify/lib/route.js:613:5)
+    at next (/home/suri/proj/library_management/backend/node_modules/fastify/lib/hooks.js:233:9) {
+  code: 'TOKEN_INVALID',
+  statusCode: 401,
+  details: undefined
+}
+
+{"level":50,"time":1783882507642,"pid":20701,"hostname":"pop-os","reqId":"ba139c15-6fa6-419d-8864-0885638fb5ee","error":{},"msg":"Unhandled error"}
+{"level":30,"time":1783882507642,"pid":20701,"hostname":"pop-os","reqId":"ba139c15-6fa6-419d-8864-0885638fb5ee","res":{"statusCode":500},"responseTime":0.6093879998661578,"msg":"request completed"}
+{"level":30,"time":1783882507645,"pid":20701,"hostname":"pop-os","reqId":"bf377420-fb00-48d3-8c87-298281489703","req":{"method":"GET","url":"/api/v1/auth/me","hostname":"localhost:80","remoteAddress":"127.0.0.1"},"msg":"incoming request"}
+{"level":40,"time":1783882507646,"pid":20701,"hostname":"pop-os","reqId":"bf377420-fb00-48d3-8c87-298281489703","error":{"code":"TOKEN_INVALID","statusCode":401,"name":"AppError"},"msg":"Access token is invalid"}
+{"level":30,"time":1783882507646,"pid":20701,"hostname":"pop-os","reqId":"bf377420-fb00-48d3-8c87-298281489703","res":{"statusCode":401},"responseTime":0.9116480001248419,"msg":"request completed"}
+{"level":30,"time":1783882507648,"pid":20701,"hostname":"pop-os","reqId":"5eb4211e-f30c-440b-a8c7-e3ba226d857d","req":{"method":"POST","url":"/api/v1/auth/login","hostname":"localhost:80","remoteAddress":"127.0.0.1"},"msg":"incoming request"}
+stderr | src/modules/auth/auth.test.ts > Auth module > returns current user profile from /auth/me
+ERROR IN ERROR_HANDLER: TypeError: Cannot read properties of undefined (reading 'select')
+    at AuthRepository.findByEmailWithLibrary (/home/suri/proj/library_management/backend/src/modules/auth/auth.repository.ts:27:8)
+    at AuthService.login (/home/suri/proj/library_management/backend/src/modules/auth/auth.service.ts:36:42)
+    at Object.<anonymous> (/home/suri/proj/library_management/backend/src/modules/auth/auth.routes.ts:51:34)
+    at Object.routeOptions.handler (/home/suri/proj/library_management/backend/node_modules/@fastify/websocket/index.js:150:24)
+    at preHandlerCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:139:37)
+    at validationCompleted (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:123:5)
+    at preValidationCallback (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:100:5)
+    at handler (/home/suri/proj/library_management/backend/node_modules/fastify/lib/handleRequest.js:77:7)
+    at /home/suri/proj/library_management/backend/node_modules/fastify/lib/contentTypeParser.js:199:9
+    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+
+{"level":50,"time":1783882507649,"pid":20701,"hostname":"pop-os","reqId":"5eb4211e-f30c-440b-a8c7-e3ba226d857d","error":{},"msg":"Unhandled error"}
+{"level":30,"time":1783882507649,"pid":20701,"hostname":"pop-os","reqId":"5eb4211e-f30c-440b-a8c7-e3ba226d857d","res":{"statusCode":500},"responseTime":1.2760840002447367,"msg":"request completed"}
+ ❯ src/modules/auth/auth.test.ts (8 tests | 8 failed) 306ms
+   × Auth module > logs in successfully 18ms
+     → expected 500 to be 200 // Object.is equality
+   × Auth module > returns 401 for wrong password 2ms
+     → expected 500 to be 401 // Object.is equality
+   × Auth module > returns 401 for non-existent user with same error message 3ms
+     → expected 500 to be 401 // Object.is equality
+   × Auth module > refreshes access token successfully 2ms
+     → expected undefined to be defined
+   × Auth module > rotates refresh token and invalidates the old token 1ms
+     → expected undefined to be defined
+   × Auth module > logs out and revokes refresh token 1ms
+     → expected undefined to be defined
+   × Auth module > returns 401 for expired access token 5ms
+     → expected 'TOKEN_INVALID' to be 'TOKEN_EXPIRED' // Object.is equality
+   × Auth module > returns current user profile from /auth/me 2ms
+     → Cannot read properties of undefined (reading 'accessToken')
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/auth/auth.test.ts > Auth module > logs in successfully
+AssertionError: expected 500 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 500
+
+ ❯ src/modules/auth/auth.test.ts:41:33
+     39|     });
+     40| 
+     41|     expect(response.statusCode).toBe(200);
+       |                                 ^
+     42| 
+     43|     const body = response.json();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  src/modules/auth/auth.test.ts > Auth module > returns 401 for wrong password
+AssertionError: expected 500 to be 401 // Object.is equality
+
+- Expected
++ Received
+
+- 401
++ 500
+
+ ❯ src/modules/auth/auth.test.ts:62:33
+     60|     });
+     61| 
+     62|     expect(response.statusCode).toBe(401);
+       |                                 ^
+     63|     expect(response.json().error.code).toBe('INVALID_CREDENTIALS');
+     64|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  src/modules/auth/auth.test.ts > Auth module > returns 401 for non-existent user with same error message
+AssertionError: expected 500 to be 401 // Object.is equality
+
+- Expected
++ Received
+
+- 401
++ 500
+
+ ❯ src/modules/auth/auth.test.ts:87:44
+     85|     });
+     86| 
+     87|     expect(missingUserResponse.statusCode).toBe(401);
+       |                                            ^
+     88|     expect(missingUserResponse.json().error.code).toBe('INVALID_CREDEN…
+     89|     expect(missingUserResponse.json().error.message).toBe(wrongPasswor…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  src/modules/auth/auth.test.ts > Auth module > refreshes access token successfully
+AssertionError: expected undefined to be defined
+ ❯ src/modules/auth/auth.test.ts:104:26
+    102| 
+    103|     const refreshToken = getRefreshTokenFromResponse(loginResponse.hea…
+    104|     expect(refreshToken).toBeDefined();
+       |                          ^
+    105| 
+    106|     const refreshResponse = await app.inject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  src/modules/auth/auth.test.ts > Auth module > rotates refresh token and invalidates the old token
+AssertionError: expected undefined to be defined
+ ❯ src/modules/auth/auth.test.ts:131:29
+    129| 
+    130|     const oldRefreshToken = getRefreshTokenFromResponse(loginResponse.…
+    131|     expect(oldRefreshToken).toBeDefined();
+       |                             ^
+    132| 
+    133|     const refreshResponse = await app.inject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  src/modules/auth/auth.test.ts > Auth module > logs out and revokes refresh token
+AssertionError: expected undefined to be defined
+ ❯ src/modules/auth/auth.test.ts:167:26
+    165| 
+    166|     const refreshToken = getRefreshTokenFromResponse(loginResponse.hea…
+    167|     expect(refreshToken).toBeDefined();
+       |                          ^
+    168| 
+    169|     const logoutResponse = await app.inject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  src/modules/auth/auth.test.ts > Auth module > returns 401 for expired access token
+AssertionError: expected 'TOKEN_INVALID' to be 'TOKEN_EXPIRED' // Object.is equality
+
+Expected: "TOKEN_EXPIRED"
+Received: "TOKEN_INVALID"
+
+ ❯ src/modules/auth/auth.test.ts:215:40
+    213| 
+    214|     expect(response.statusCode).toBe(401);
+    215|     expect(response.json().error.code).toBe('TOKEN_EXPIRED');
+       |                                        ^
+    216|   });
+    217| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  src/modules/auth/auth.test.ts > Auth module > returns current user profile from /auth/me
+TypeError: Cannot read properties of undefined (reading 'accessToken')
+ ❯ src/modules/auth/auth.test.ts:229:46
+    227|     });
+    228| 
+    229|     const accessToken = loginResponse.json().data.accessToken as strin…
+       |                                              ^
+    230| 
+    231|     const meResponse = await app.inject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  8 failed (8)
+   Start at  00:25:06
+   Duration  1.13s (transform 150ms, setup 18ms, collect 661ms, tests 306ms, environment 0ms, prepare 46ms)
+

@@ -1,0 +1,13 @@
+export const DEFAULT_PAGE_SIZE = 20;
+export const MAX_PAGE_SIZE = 100;
+export const DEFAULT_REQUEST_BODY_SIZE = '1mb';
+export const DEFAULT_API_VERSION = 'v1';
+export const DEFAULT_PORT = 3000;
+export const DEFAULT_TIMEZONE = 'Asia/Kolkata';
+export const REQUEST_ID_HEADER = 'x-request-id';
+export const RESPONSE_REQUEST_ID_HEADER = 'X-Request-ID';
+export const REFRESH_TOKEN_COOKIE = 'refresh_token';
+export const BCRYPT_ROUNDS = 12;
+export const LOGIN_RATE_LIMIT_MAX = 5;
+export const LOGIN_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
+//# sourceMappingURL=constants.js.map
