@@ -9,7 +9,10 @@ export declare class StudentService {
     private readonly studentRepository;
     private readonly auditLogRepository;
     constructor(db: Database);
-    createStudent(body: CreateStudentBody, ctx: RequestContext, ipAddress?: string): Promise<StudentResponseDTO>;
+    createStudent(body: CreateStudentBody, ctx: RequestContext, ipAddress?: string): Promise<StudentResponseDTO & {
+        password?: string;
+    }>;
+    getCurrentStudent(email: string, libraryId: string): Promise<StudentResponseDTO>;
     getStudentById(studentId: string, libraryId: string): Promise<StudentResponseDTO>;
     updateStudent(studentId: string, body: UpdateStudentBody, ctx: RequestContext, ipAddress?: string): Promise<StudentResponseDTO>;
     updateStudentStatus(studentId: string, status: 'active' | 'suspended' | 'expired' | 'inactive', ctx: RequestContext, ipAddress?: string): Promise<StudentResponseDTO>;

@@ -39,6 +39,14 @@ export class AuthRepository {
         }
         return row;
     }
+    async findLibraryBySlug(slug) {
+        const rows = await this.db
+            .select()
+            .from(libraries)
+            .where(eq(libraries.slug, slug))
+            .limit(1);
+        return rows[0] ?? null;
+    }
     async findLibraryById(libraryId) {
         const rows = await this.db
             .select()

@@ -1,12 +1,24 @@
 import crypto from 'node:crypto';
+import bcrypt from 'bcrypt';
 import { eq } from 'drizzle-orm';
 import { libraries } from '../../db/schema/libraries.js';
+import { users } from '../../db/schema/users.js';
+import { payments } from '../../db/schema/payments.js';
+import { BCRYPT_ROUNDS } from '../../config/constants.js';
 import { StudentRepository } from './students.repository.js';
 import { AuditLogRepository } from '../../shared/utils/audit-log.repository.js';
 import { generateQrToken } from '../../shared/utils/qr-token.util.js';
 import { toStudentResponseDTO, toStudentListItemDTO, toStudentIdCardDTO } from '../../shared/dto/student.dto.js';
 import { AppError } from '../../shared/errors/app-error.js';
 import { ERROR_CODES } from '../../shared/errors/error-codes.js';
+function generateDefaultPassword() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+    let pw = '';
+    for (let i = 0; i < 10; i++) {
+        pw += chars[crypto.randomInt(chars.length)];
+    }
+    return pw;
+}
 export class StudentService {
     db;
     studentRepository;
@@ -19,33 +31,87 @@ export class StudentService {
     async createStudent(body, ctx, ipAddress) {
         const studentId = crypto.randomUUID();
         const qrToken = generateQrToken(studentId, ctx.libraryId);
-        const created = await this.db.transaction(async (tx) => {
-            const repo = new StudentRepository(tx);
-            const auditRepo = new AuditLogRepository(tx);
-            const student = await repo.create({
-                ...body,
-                id: studentId,
-                libraryId: ctx.libraryId,
-                qrToken,
-                createdBy: ctx.user?.id
+        const password = body.password ?? generateDefaultPassword();
+        const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
+        const { password: _pw, paymentStatus, ...studentFields } = body;
+        const customFields = { ...studentFields.customFields };
+        if (paymentStatus !== undefined) {
+            customFields.paymentStatus = paymentStatus;
+        }
+        let created;
+        try {
+            created = await this.db.transaction(async (tx) => {
+                const repo = new StudentRepository(tx);
+                const auditRepo = new AuditLogRepository(tx);
+                const student = await repo.create({
+                    ...studentFields,
+                    id: studentId,
+                    libraryId: ctx.libraryId,
+                    qrToken,
+                    customFields,
+                    createdBy: ctx.user?.id
+                });
+                await tx.insert(users).values({
+                    libraryId: ctx.libraryId,
+                    name: body.name,
+                    email: body.email ?? `${studentId}@student.local`,
+                    passwordHash,
+                    role: 'student',
+                });
+                if (paymentStatus === 'paid') {
+                    const membershipAmounts = {
+                        Daily: '50', Weekly: '150', Monthly: '500', Quarterly: '1400',
+                    };
+                    const membershipType = customFields.membership ?? 'Monthly';
+                    await tx.insert(payments).values({
+                        libraryId: ctx.libraryId,
+                        studentId: student.id,
+                        amount: membershipAmounts[membershipType] ?? '500',
+                        method: 'cash',
+                        status: 'paid',
+                        paymentDate: new Date().toISOString().slice(0, 10),
+                        recordedBy: ctx.user?.id,
+                    });
+                }
+                await auditRepo.create({
+                    libraryId: ctx.libraryId,
+                    userId: ctx.user?.id,
+                    requestId: ctx.requestId,
+                    action: 'CREATE_STUDENT',
+                    entityType: 'students',
+                    entityId: student.id,
+                    newValue: student,
+                    ipAddress
+                });
+                return student;
             });
-            await auditRepo.create({
-                libraryId: ctx.libraryId,
-                userId: ctx.user?.id,
-                requestId: ctx.requestId,
-                action: 'CREATE_STUDENT',
-                entityType: 'students',
-                entityId: student.id,
-                newValue: student,
-                ipAddress
-            });
-            return student;
-        });
+        }
+        catch (err) {
+            if (err && typeof err === 'object' && 'code' in err && err.code === '23505') {
+                const detail = err.detail ?? '';
+                if (detail.includes('phone')) {
+                    throw new AppError(ERROR_CODES.VALIDATION_ERROR, 'A student with this phone number already exists in your library.', 409);
+                }
+                if (detail.includes('email')) {
+                    throw new AppError(ERROR_CODES.VALIDATION_ERROR, 'A student with this email already exists in your library.', 409);
+                }
+                throw new AppError(ERROR_CODES.VALIDATION_ERROR, 'A student with this information already exists.', 409);
+            }
+            throw err;
+        }
         const studentWithRelations = await this.studentRepository.findById(created.id, ctx.libraryId);
         if (!studentWithRelations) {
             throw new AppError(ERROR_CODES.STUDENT_NOT_FOUND, 'Student not found after creation', 404);
         }
-        return toStudentResponseDTO(studentWithRelations);
+        const dto = toStudentResponseDTO(studentWithRelations);
+        return { ...dto, password };
+    }
+    async getCurrentStudent(email, libraryId) {
+        const student = await this.studentRepository.findCurrentStudentByEmail(email, libraryId);
+        if (!student) {
+            throw new AppError(ERROR_CODES.STUDENT_NOT_FOUND, 'Student not found', 404);
+        }
+        return toStudentResponseDTO(student);
     }
     async getStudentById(studentId, libraryId) {
         const student = await this.studentRepository.findById(studentId, libraryId);

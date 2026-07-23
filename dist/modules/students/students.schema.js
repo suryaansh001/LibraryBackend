@@ -10,6 +10,8 @@ export const createStudentBodySchema = z
     photoUrl: z.string().url().optional(),
     status: z.enum(['active', 'suspended', 'expired', 'inactive']).default('active'),
     seatId: uuidParamSchema.optional(),
+    password: z.string().min(6).max(128).optional(),
+    paymentStatus: z.enum(['paid', 'pending']).optional(),
     customFields: z.record(z.string(), z.unknown()).default({}),
     notes: z.string().max(5000).optional()
 })

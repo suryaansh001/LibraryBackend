@@ -3,7 +3,7 @@ import { db } from '../../config/database.js';
 import { LOGIN_RATE_LIMIT_MAX, LOGIN_RATE_LIMIT_WINDOW_MS, REFRESH_TOKEN_COOKIE } from '../../config/constants.js';
 import { authenticate } from '../../shared/middleware/authenticate.js';
 import { createTenantMiddleware } from '../../shared/middleware/tenant.js';
-import { loginBodySchema } from './auth.schema.js';
+import { loginBodySchema, registerBodySchema } from './auth.schema.js';
 import { AuthRepository } from './auth.repository.js';
 import { AuthService } from './auth.service.js';
 import { sendSuccess } from '../../shared/utils/response.util.js';
@@ -42,6 +42,23 @@ export const authRoutes = async (fastify) => {
             ipAddress: request.ip,
             deviceInfo: request.headers['user-agent']
         });
+        setRefreshTokenCookie(reply, result.refreshToken);
+        return sendSuccess(reply, request, {
+            accessToken: result.accessToken,
+            user: result.user,
+            library: result.library
+        });
+    });
+    fastify.post('/register', {
+        config: {
+            rateLimit: {
+                max: config.NODE_ENV === 'test' ? 10000 : 5,
+                timeWindow: '1 hour'
+            }
+        }
+    }, async (request, reply) => {
+        const body = registerBodySchema.parse(request.body);
+        const result = await service.register(body);
         setRefreshTokenCookie(reply, result.refreshToken);
         return sendSuccess(reply, request, {
             accessToken: result.accessToken,

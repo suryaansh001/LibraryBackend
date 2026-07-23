@@ -18,6 +18,7 @@ export declare class AuthRepository {
     constructor(db: Database);
     findByEmailWithLibrary(email: string, librarySlug: string): Promise<UserWithLibrary | null>;
     findUserWithLibraryById(userId: string, libraryId: string): Promise<UserWithLibrary | null>;
+    findLibraryBySlug(slug: string): Promise<typeof libraries.$inferSelect | null>;
     findLibraryById(libraryId: string): Promise<typeof libraries.$inferSelect | null>;
     findRefreshTokenByHash(tokenHash: string): Promise<RefreshTokenWithUser | null>;
     createRefreshToken(input: {

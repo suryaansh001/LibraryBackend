@@ -11,6 +11,11 @@ export declare const createStudentBodySchema: z.ZodObject<{
         inactive: "inactive";
     }>>;
     seatId: z.ZodOptional<z.ZodString>;
+    password: z.ZodOptional<z.ZodString>;
+    paymentStatus: z.ZodOptional<z.ZodEnum<{
+        paid: "paid";
+        pending: "pending";
+    }>>;
     customFields: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
     notes: z.ZodOptional<z.ZodString>;
 }, z.core.$strict>;

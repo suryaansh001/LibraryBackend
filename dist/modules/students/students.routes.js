@@ -22,9 +22,9 @@ export const studentRoutes = async (fastify) => {
             meta: buildPaginationMeta(query.page, query.limit, result.total)
         });
     });
-    // POST /students (owner, staff)
+    // POST /students (owner, staff, receptionist)
     fastify.post('/', {
-        preHandler: [authorize('owner', 'staff')]
+        preHandler: [authorize('owner', 'staff', 'receptionist')]
     }, async (request, reply) => {
         const body = createStudentBodySchema.parse(request.body);
         const student = await studentService.createStudent(body, {
@@ -33,6 +33,43 @@ export const studentRoutes = async (fastify) => {
             user: request.user
         }, request.ip);
         return sendSuccess(reply, request, student, { statusCode: 201 });
+    });
+    // GET /students/me (student role) — current student profile
+    fastify.get('/me', {
+        preHandler: [authorize('student')]
+    }, async (request, reply) => {
+        const student = await studentService.getCurrentStudent(request.user.email, request.libraryId);
+        return sendSuccess(reply, request, student);
+    });
+    // GET /students/me/history (student role)
+    fastify.get('/me/history', {
+        preHandler: [authorize('student')]
+    }, async (request, reply) => {
+        const student = await studentService.getCurrentStudent(request.user.email, request.libraryId);
+        const query = studentHistoryQuerySchema.parse(request.query);
+        const result = await studentService.getStudentHistory(student.id, query, request.libraryId);
+        return sendSuccess(reply, request, result.data, {
+            meta: buildPaginationMeta(query.page, query.limit, result.total)
+        });
+    });
+    // GET /students/me/payments (student role)
+    fastify.get('/me/payments', {
+        preHandler: [authorize('student')]
+    }, async (request, reply) => {
+        const student = await studentService.getCurrentStudent(request.user.email, request.libraryId);
+        const query = studentPaymentsQuerySchema.parse(request.query);
+        const result = await studentService.getStudentPayments(student.id, query, request.libraryId);
+        return sendSuccess(reply, request, result.data, {
+            meta: buildPaginationMeta(query.page, query.limit, result.total)
+        });
+    });
+    // GET /students/me/id-card (student role)
+    fastify.get('/me/id-card', {
+        preHandler: [authorize('student')]
+    }, async (request, reply) => {
+        const student = await studentService.getCurrentStudent(request.user.email, request.libraryId);
+        const cardData = await studentService.getStudentIdCard(student.id, request.libraryId);
+        return sendSuccess(reply, request, cardData);
     });
     // GET /students/:id (all roles)
     fastify.get('/:id', async (request, reply) => {

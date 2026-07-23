@@ -2,6 +2,8 @@ import bcrypt from 'bcrypt';
 import { config } from '../../config/env.js';
 import { BCRYPT_ROUNDS } from '../../config/constants.js';
 import { db } from '../../config/database.js';
+import { libraries } from '../../db/schema/libraries.js';
+import { users } from '../../db/schema/users.js';
 import { toLibraryResponseDTO, toUserResponseDTO } from '../../shared/dto/auth.dto.js';
 import { AppError } from '../../shared/errors/app-error.js';
 import { ERROR_CODES } from '../../shared/errors/error-codes.js';
@@ -43,6 +45,55 @@ export class AuthService {
             refreshToken,
             user: toUserResponseDTO(record.user),
             library: toLibraryResponseDTO(record.library)
+        };
+    }
+    async register(body) {
+        const normalizedEmail = body.email.toLowerCase();
+        const normalizedSlug = body.librarySlug.toLowerCase().replace(/[^a-z0-9-]/g, '');
+        if (normalizedSlug.length < 1) {
+            throw new AppError(ERROR_CODES.VALIDATION_ERROR, 'Invalid library slug. Use letters, numbers, and hyphens.', 400);
+        }
+        const existingSlug = await this.repository.findLibraryBySlug(normalizedSlug);
+        if (existingSlug) {
+            throw new AppError(ERROR_CODES.VALIDATION_ERROR, 'Library slug is already taken. Please choose another.', 409);
+        }
+        const passwordHash = await AuthService.hashPassword(body.password);
+        const [newLib] = await db.insert(libraries).values({
+            name: body.libraryName,
+            slug: normalizedSlug,
+            ownerEmail: normalizedEmail,
+            capacity: 100,
+            subscriptionPlan: 'trial',
+            subscriptionStatus: 'trialing',
+        }).returning();
+        if (!newLib) {
+            throw new AppError(ERROR_CODES.INTERNAL_SERVER_ERROR, 'Failed to create library', 500);
+        }
+        const [newUser] = await db.insert(users).values({
+            libraryId: newLib.id,
+            name: body.name,
+            email: normalizedEmail,
+            phone: body.phone ?? null,
+            passwordHash,
+            role: 'owner',
+        }).returning();
+        if (!newUser) {
+            throw new AppError(ERROR_CODES.INTERNAL_SERVER_ERROR, 'Failed to create user', 500);
+        }
+        const refreshTokenValue = generateRefreshToken();
+        const tokenHash = hashToken(refreshTokenValue);
+        const expiresAt = addDurationToDate(config.JWT_REFRESH_EXPIRES_IN);
+        await this.repository.createRefreshToken({
+            userId: newUser.id,
+            libraryId: newLib.id,
+            tokenHash,
+            expiresAt,
+        });
+        return {
+            accessToken: this.createAccessToken(newUser.id, newLib.id, newUser.role, newUser.email),
+            refreshToken: refreshTokenValue,
+            user: toUserResponseDTO(newUser),
+            library: toLibraryResponseDTO(newLib)
         };
     }
     async refresh(refreshToken) {
