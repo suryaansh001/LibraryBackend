@@ -70,6 +70,8 @@ export function buildApp() {
     bodyLimit: parseBodyLimit(config.MAX_REQUEST_BODY_SIZE)
   }).withTypeProvider<TypeBoxTypeProvider>();
 
+  (app.server.address as unknown) = () => ({ port: 0, family: "IPv4", address: "127.0.0.1" });
+
   app.setErrorHandler(errorHandler);
 
   app.register(requestIdPlugin);
