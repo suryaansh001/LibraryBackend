@@ -91,6 +91,4 @@ export function buildApp() {
     });
     return app;
 }
-const _app = buildApp();
-export default _app;
 //# sourceMappingURL=app.js.map
