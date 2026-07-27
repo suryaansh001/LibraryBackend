@@ -1,5 +1,5 @@
-import { buildApp } from "../dist/app.js";
-import type { LibraryOsApp } from "../dist/app.js";
+import { buildApp } from "../src/app.js";
+import type { LibraryOsApp } from "../src/app.js";
 
 let app: LibraryOsApp | null = null;
 
