@@ -113,3 +113,13 @@ export function buildApp() {
 }
 
 export type LibraryOsApp = ReturnType<typeof buildApp>;
+
+let app: LibraryOsApp | null = null;
+
+export default async function handler(req: any, res: any) {
+  if (!app) {
+    app = buildApp();
+    await app.ready();
+  }
+  app.server.emit("request", req, res);
+}
